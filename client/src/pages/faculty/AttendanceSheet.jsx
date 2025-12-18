@@ -91,7 +91,7 @@ const AttendanceSheet = () => {
 
       // Note: Ensure your API URL is correct here (localhost:5000 or your production URL)
       const response = await fetch(
-        `http://localhost:5000/api/faculty/attendance/${courseId}/export`,
+        `https://attendo-hfmg.onrender.com/api/faculty/attendance/${courseId}/export`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
