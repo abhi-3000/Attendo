@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../utils/authUtils.js";
 
+
 const prisma = new PrismaClient();
 
 // 1. Create a New Faculty
@@ -254,5 +255,90 @@ export const getDashboardStats = async (req, res) => {
   } catch (error) {
     console.error("Stats Error:", error);
     res.status(500).json({ error: "Failed to fetch stats" });
+  }
+};
+
+export const addBulkStudents = async (req, res) => {
+  try {
+    const { students } = req.body;
+    console.log(`➡️ Received request to bulk add ${students?.length} students.`);
+
+    if (!students || students.length === 0) {
+      return res.status(400).json({ error: "No students provided in the file." });
+    }
+
+    // 1. Fetch branches for mapping
+    const branches = await prisma.branch.findMany();
+    const branchMap = {};
+    branches.forEach(b => { branchMap[b.code.toUpperCase()] = b.id; });
+
+    // 2. ⚡ BULK PRE-VALIDATION (Extremely Fast)
+    // Extract all emails and roll numbers from the Excel data
+    const incomingEmails = students.map(s => s.email);
+    const incomingRolls = students.map(s => s.rollNumber);
+
+    // Check all emails in ONE query
+    const existingUsers = await prisma.user.findMany({
+      where: { email: { in: incomingEmails } },
+      select: { email: true }
+    });
+    if (existingUsers.length > 0) {
+      const duplicates = existingUsers.map(u => u.email).join(', ');
+      return res.status(400).json({ error: `Upload aborted. These emails already exist: ${duplicates}` });
+    }
+
+    // Check all roll numbers in ONE query
+    const existingStudents = await prisma.student.findMany({
+      where: { rollNumber: { in: incomingRolls } },
+      select: { rollNumber: true }
+    });
+    if (existingStudents.length > 0) {
+      const duplicates = existingStudents.map(s => s.rollNumber).join(', ');
+      return res.status(400).json({ error: `Upload aborted. These Roll Numbers already exist: ${duplicates}` });
+    }
+
+    // 3. Pre-Hash all passwords outside the database connection
+    console.log("➡️ Hashing passwords...");
+    const processedStudents = await Promise.all(
+      students.map(async (s) => {
+        const hashedPassword = await hashPassword(s.password || "password123");
+        return { ...s, hashedPassword };
+      })
+    );
+
+    // 4. Build the array of Operations (Nested Writes)
+    console.log("➡️ Building transaction operations...");
+    const operations = processedStudents.map(s => {
+      const branchId = branchMap[s.branchCode?.toUpperCase()];
+      if (!branchId) throw new Error(`Invalid branch code '${s.branchCode}' found for ${s.name}`);
+
+      // Prisma Nested Write: Creates User and Student in one go
+      return prisma.user.create({
+        data: {
+          name: s.name,
+          email: s.email,
+          password: s.hashedPassword,
+          role: "STUDENT",
+          student: {
+            create: {
+              rollNumber: s.rollNumber,
+              batch: s.batch,
+              branchId: branchId,
+              program: s.program?.toUpperCase() || "BTECH",
+              semester: parseInt(s.semester) || 1,
+            }
+          }
+        }
+      });
+    });
+    console.log("Executing bulk transaction...");
+    const results = await prisma.$transaction(operations);
+
+    console.log(`Successfully added ${results.length} students.`);
+    res.status(201).json({ message: `${results.length} students added successfully.` });
+
+  } catch (error) {
+    console.error("Bulk Upload Error:", error);
+    res.status(400).json({ error: error.message || "Failed to process bulk upload." });
   }
 };

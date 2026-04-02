@@ -4,11 +4,12 @@ export const apiSlice = createApi({
   tagTypes: ["Faculty", "Student", "Course"],
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://attendo-hfmg.onrender.com/api",
+    // baseUrl: "https://attendo-hfmg.onrender.com/api",
+    baseUrl: "http://localhost:5000/api",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set("authorization", `Bearer ${token}`); 
       }
       return headers;
     },
@@ -22,10 +23,9 @@ export const apiSlice = createApi({
       }),
     }),
 
-    // --- New Endpoints ---
     getFacultyList: builder.query({
       query: () => "/admin/faculty",
-      providesTags: ["Faculty"], // Tag this data
+      providesTags: ["Faculty"], 
     }),
 
     addFaculty: builder.mutation({
@@ -34,7 +34,7 @@ export const apiSlice = createApi({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Faculty"], // Refresh the list after adding
+      invalidatesTags: ["Faculty"],
     }),
 
     getBranches: builder.query({
@@ -77,7 +77,7 @@ export const apiSlice = createApi({
     getCourseStudents: builder.query({
       query: ({ courseId, date }) =>
         `/faculty/course/${courseId}/students?date=${date}`,
-      providesTags: ["Attendance"], // Refreshes when attendance is marked
+      providesTags: ["Attendance"], 
     }),
 
     markAttendance: builder.mutation({
@@ -91,12 +91,20 @@ export const apiSlice = createApi({
 
     getStudentDashboard: builder.query({
       query: () => "/student/dashboard",
-      providesTags: ["Attendance"], // Updates if attendance changes
+      providesTags: ["Attendance"], 
     }),
 
     getAdminStats: builder.query({
       query: () => "/admin/stats",
       providesTags: ["Student", "Faculty", "Course"],
+    }),
+    addBulkStudents: builder.mutation({
+      query: (data) => ({
+        url: '/admin/students/bulk',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['Student'], 
     }),
   }),
 });
@@ -115,4 +123,5 @@ export const {
   useMarkAttendanceMutation,
   useGetStudentDashboardQuery,
   useGetAdminStatsQuery,
+  useAddBulkStudentsMutation
 } = apiSlice;

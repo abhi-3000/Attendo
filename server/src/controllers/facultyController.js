@@ -42,6 +42,8 @@ export const getCourseStudents = async (req, res) => {
     });
 
     if (!course) return res.status(404).json({ error: "Course not found" });
+    console.log(`Looking for students in Branch ID: ${course.branchId}`);
+    console.log(`Looking for students in Semester: ${course.semester}`);
 
     // B. Fetch Students matching that Branch and Semester
     // AND fetch their attendance status for the specific date if it exists

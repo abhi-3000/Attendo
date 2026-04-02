@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useGetStudentsQuery } from "../../features/api/apiSlice";
 import { Plus, Search } from "lucide-react";
 import AddStudentModal from "../../components/AddStudentModal";
-
+import BulkStudentUploadModal from "../../components/BulkStudentUploadModal";
+import { Upload } from "lucide-react";
 const ManageStudents = () => {
   const { data: students, isLoading } = useGetStudentsQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
 
   if (isLoading)
     return (
@@ -23,7 +25,7 @@ const ManageStudents = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
             Student Management
@@ -39,6 +41,35 @@ const ManageStudents = () => {
           <Plus size={20} />
           Add Student
         </button>
+      </div> */}
+
+      {/* Header & Actions */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Student Management</h1>
+          <p className="text-slate-500 text-sm">Manage student records and enrollments</p>
+        </div>
+        
+        {/* Button Group */}
+        <div className="flex items-center gap-3">
+          {/* Secondary Action: Bulk Upload (Emerald Styling) */}
+          <button 
+            onClick={() => setIsBulkModalOpen(true)}
+            className="flex items-center gap-2 bg-emerald-50 text-emerald-700 border border-emerald-200 px-4 py-2.5 rounded-lg hover:bg-emerald-100 transition-all shadow-sm font-semibold"
+          >
+            <Upload size={18} />
+            Bulk Upload
+          </button>
+          
+          {/* Primary Action: Add Single Student (Solid Blue Styling) */}
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-500/30 font-semibold"
+          >
+            <Plus size={20} />
+            Add Student
+          </button>
+        </div>
       </div>
 
       <div className="relative max-w-md">
@@ -131,6 +162,7 @@ const ManageStudents = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      <BulkStudentUploadModal isOpen={isBulkModalOpen} onClose={() => setIsBulkModalOpen(false)} />
     </div>
   );
 };

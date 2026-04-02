@@ -8,8 +8,10 @@ import {
   createCourse,
   getAllCourses,
   getDashboardStats,
+  addBulkStudents
 } from "../controllers/adminController.js";
 import { protect, adminOnly } from "../middlewares/authMiddleware.js";
+
 
 const router = express.Router();
 
@@ -22,7 +24,7 @@ router.get("/faculty", getAllFaculty);
 router.get("/branches", getAllBranches);
 router.post("/students", createStudent);
 router.get("/students", getAllStudents);
-
+router.post('/students/bulk', addBulkStudents);
 router.post('/courses', createCourse);
 router.get('/courses', getAllCourses);
 router.get("/stats", getDashboardStats);
