@@ -4,12 +4,11 @@ export const apiSlice = createApi({
   tagTypes: ["Faculty", "Student", "Course"],
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    // baseUrl: "https://attendo-hfmg.onrender.com/api",
     baseUrl: "http://localhost:5000/api",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {
-        headers.set("authorization", `Bearer ${token}`); 
+        headers.set("authorization", `Bearer ${token}`);
       }
       return headers;
     },
@@ -25,7 +24,7 @@ export const apiSlice = createApi({
 
     getFacultyList: builder.query({
       query: () => "/admin/faculty",
-      providesTags: ["Faculty"], 
+      providesTags: ["Faculty"],
     }),
 
     addFaculty: builder.mutation({
@@ -77,7 +76,7 @@ export const apiSlice = createApi({
     getCourseStudents: builder.query({
       query: ({ courseId, date }) =>
         `/faculty/course/${courseId}/students?date=${date}`,
-      providesTags: ["Attendance"], 
+      providesTags: ["Attendance"],
     }),
 
     markAttendance: builder.mutation({
@@ -91,7 +90,7 @@ export const apiSlice = createApi({
 
     getStudentDashboard: builder.query({
       query: () => "/student/dashboard",
-      providesTags: ["Attendance"], 
+      providesTags: ["Attendance"],
     }),
 
     getAdminStats: builder.query({
@@ -100,11 +99,23 @@ export const apiSlice = createApi({
     }),
     addBulkStudents: builder.mutation({
       query: (data) => ({
-        url: '/admin/students/bulk',
-        method: 'POST',
+        url: "/admin/students/bulk",
+        method: "POST",
         body: data,
       }),
-      invalidatesTags: ['Student'], 
+      invalidatesTags: ["Student"],
+    }),
+    getAdvancedAnalytics: builder.query({
+      query: () => "/admin/analytics",
+      providesTags: ["Analytics"],
+    }),
+    markGeofencedAttendance: builder.mutation({
+      query: (data) => ({
+        url: "/student/mark-geofence",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Attendance"],
     }),
   }),
 });
@@ -123,5 +134,7 @@ export const {
   useMarkAttendanceMutation,
   useGetStudentDashboardQuery,
   useGetAdminStatsQuery,
-  useAddBulkStudentsMutation
+  useAddBulkStudentsMutation,
+  useGetAdvancedAnalyticsQuery,
+  useMarkGeofencedAttendanceMutation,
 } = apiSlice;

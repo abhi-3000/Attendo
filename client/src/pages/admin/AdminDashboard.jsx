@@ -9,8 +9,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import AdvancedAnalytics from "../../components/AdvancedAnalytics";
 
-// Reusable Stat Card
+
 const StatCard = ({ title, value, icon, color, subtext }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -52,7 +53,6 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      {/* Dynamic Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Total Students"
@@ -84,7 +84,6 @@ const AdminDashboard = () => {
         />
       </div>
 
-      {/* Recent System Activity */}
       <div className="mt-8 bg-white p-6 rounded-xl shadow-sm border border-slate-100">
         <div className="flex items-center gap-2 mb-6">
           <Activity size={20} className="text-blue-600" />
@@ -110,8 +109,8 @@ const AdminDashboard = () => {
                     activity.type === "student"
                       ? "bg-blue-500"
                       : activity.type === "faculty"
-                      ? "bg-purple-500"
-                      : "bg-orange-500"
+                        ? "bg-purple-500"
+                        : "bg-orange-500"
                   }`}
                 ></div>
 
@@ -127,6 +126,7 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+      <AdvancedAnalytics />
     </div>
   );
 };

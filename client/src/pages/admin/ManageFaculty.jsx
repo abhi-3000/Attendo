@@ -15,7 +15,7 @@ const ManageFaculty = () => {
       </div>
     );
 
-  // Filter logic
+  
   const filteredList = facultyList?.filter(
     (f) =>
       f.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -24,7 +24,7 @@ const ManageFaculty = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Actions */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
@@ -43,7 +43,7 @@ const ManageFaculty = () => {
         </button>
       </div>
 
-      {/* Search Bar */}
+      
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-2.5 text-slate-400" size={20} />
         <input
@@ -55,7 +55,7 @@ const ManageFaculty = () => {
         />
       </div>
 
-      {/* Faculty Table */}
+      
       <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-slate-50 border-b border-slate-100">
@@ -122,7 +122,7 @@ const ManageFaculty = () => {
         </table>
       </div>
 
-      {/* Modal */}
+      
       <AddFacultyModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

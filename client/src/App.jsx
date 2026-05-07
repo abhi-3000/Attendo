@@ -18,13 +18,13 @@ function App() {
     <>
       <Toaster position="top-right" reverseOrder={false} />
       <Routes>
-        {/* Public Route */}
+        
         <Route path="/" element={<Login />} />
 
-        {/* Protected Admin Routes */}
+        
         <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
           <Route path="/admin" element={<AdminLayout />}>
-            {/* Default redirect to dashboard */}
+            
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<AdminDashboard />} />
 

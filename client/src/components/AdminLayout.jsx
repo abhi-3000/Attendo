@@ -43,7 +43,7 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-slate-50">
-      {/* Sidebar */}
+      
       <aside
         className={`${
           isSidebarOpen ? "w-64" : "w-20"
@@ -93,9 +93,9 @@ const AdminLayout = () => {
         </div>
       </aside>
 
-      {/* Main Content Area */}
+      
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Header */}
+        
         <header className="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm">
           <h1 className="text-xl font-semibold text-slate-800">Admin Panel</h1>
           <div className="flex items-center gap-4">
@@ -108,7 +108,7 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        {/* Page Content */}
+        
         <main className="flex-1 overflow-auto p-6">
           <Outlet />
         </main>

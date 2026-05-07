@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 import authRoutes from "./src/routes/authRoutes.js";
 import facultyRoutes from "./src/routes/facultyRoutes.js";
 import studentRoutes from "./src/routes/studentRoutes.js";
-
+import { startAttendanceCron } from "./src/jobs/attendanceCron.js";
 dotenv.config();
 
 const app = express();
@@ -15,8 +15,8 @@ const app = express();
 // Middleware
 app.use(helmet());
 app.use(cors());
-app.use(express.json()); // Allows server to read JSON data
-app.use(morgan("dev")); // Logs requests to console
+app.use(express.json()); 
+app.use(morgan("dev")); 
 
 // Routes
 app.use("/api/auth", authRoutes);
@@ -24,12 +24,10 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/faculty", facultyRoutes);
 app.use("/api/student", studentRoutes);
 
-// Root Endpoint
 app.get("/", (req, res) => {
   res.send("IIIT Ranchi Attendance API is running...");
 });
-
-// Start Server
+startAttendanceCron();
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

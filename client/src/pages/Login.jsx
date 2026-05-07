@@ -34,7 +34,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4">
-      {/* Animated gradient orbs */}
+      
       <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
       <div
         className="absolute bottom-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"
@@ -47,9 +47,9 @@ const Login = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        {/* Glass card */}
+        
         <div className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl">
-          {/* Header */}
+          
           <div className="text-center mb-10">
             <motion.h1
               initial={{ scale: 0.9 }}
@@ -64,7 +64,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Error message */}
+          
           {error && (
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -88,9 +88,9 @@ const Login = () => {
             </motion.div>
           )}
 
-          {/* Form */}
+          
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Email field */}
+            
             <div>
               <label className="block text-slate-300 text-sm font-semibold mb-2 bg-gradient-to-r from-slate-300 to-slate-400 bg-clip-text text-transparent">
                 Email Address
@@ -114,7 +114,7 @@ const Login = () => {
               )}
             </div>
 
-            {/* Password field */}
+            
             <div>
               <label className="block text-slate-300 text-sm font-semibold mb-2 bg-gradient-to-r from-slate-300 to-slate-400 bg-clip-text text-transparent">
                 Password
@@ -141,7 +141,7 @@ const Login = () => {
               )}
             </div>
 
-            {/* Submit button */}
+            
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -177,7 +177,7 @@ const Login = () => {
             </motion.button>
           </form>
 
-          {/* Footer text */}
+          
           <div className="mt-8 text-center">
             <p className="text-slate-500 text-xs">
               Secure authentication powered by IIIT Ranchi
@@ -191,106 +191,106 @@ const Login = () => {
 
 export default Login;
 
-// import { useForm } from "react-hook-form";
-// import { useLoginMutation } from "../features/api/apiSlice";
-// import { useDispatch } from "react-redux";
-// import { setCredentials } from "../features/auth/authSlice";
-// import { useNavigate } from "react-router-dom";
-// import { motion } from "framer-motion";
 
-// const Login = () => {
-//   const {
-//     register,
-//     handleSubmit,
-//     formState: { errors },
-//   } = useForm();
-//   const [login, { isLoading, error }] = useLoginMutation();
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
 
-//   const onSubmit = async (data) => {
-//     try {
-//       const userData = await login(data).unwrap();
-//       dispatch(setCredentials({ user: userData, token: userData.token }));
-//       alert("Login Successful!");
-//       if (userData.role === "ADMIN") {
-//         navigate("/admin/dashboard");
-//       } else if (userData.role === "FACULTY") {
-//         navigate("/faculty/dashboard");
-//       } else {
-//         navigate("/student/dashboard");
-//       }
-//     } catch (err) {
-//       console.error("Failed to login:", err);
-//     }
-//   };
 
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black p-4">
-//       <motion.div
-//         initial={{ opacity: 0, y: 20 }}
-//         animate={{ opacity: 1, y: 0 }}
-//         className="w-full max-w-md bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/10 shadow-xl"
-//       >
-//         <div className="text-center mb-8">
-//           <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-//             IIIT Ranchi
-//           </h1>
-//           <p className="text-gray-400 text-sm mt-2">
-//             Attendance Management System
-//           </p>
-//         </div>
 
-//         {error && (
-//           <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 text-red-200 text-sm rounded">
-//             {error.data?.error || "Login failed"}
-//           </div>
-//         )}
 
-//         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-//           <div>
-//             <label className="block text-gray-300 text-sm font-medium mb-1">
-//               Email
-//             </label>
-//             <input
-//               {...register("email", { required: "Email is required" })}
-//               className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-//               placeholder="admin@iiitranchi.ac.in"
-//             />
-//             {errors.email && (
-//               <span className="text-red-400 text-xs">
-//                 {errors.email.message}
-//               </span>
-//             )}
-//           </div>
 
-//           <div>
-//             <label className="block text-gray-300 text-sm font-medium mb-1">
-//               Password
-//             </label>
-//             <input
-//               type="password"
-//               {...register("password", { required: "Password is required" })}
-//               className="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-//               placeholder="••••••"
-//             />
-//             {errors.password && (
-//               <span className="text-red-400 text-xs">
-//                 {errors.password.message}
-//               </span>
-//             )}
-//           </div>
 
-//           <button
-//             disabled={isLoading}
-//             className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-lg transition-all shadow-lg shadow-blue-500/30"
-//           >
-//             {isLoading ? "Signing In..." : "Sign In"}
-//           </button>
-//         </form>
-//       </motion.div>
-//     </div>
-//   );
-// };
 
-// export default Login;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

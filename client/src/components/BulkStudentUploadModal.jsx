@@ -22,10 +22,10 @@ const BulkStudentUploadModal = ({ isOpen, onClose }) => {
       const sheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[sheetName];
       
-      // Convert Excel to JSON
+      
       const json = XLSX.utils.sheet_to_json(worksheet);
       
-      // Map Excel headers to our required backend keys
+      
       const formattedData = json.map((row) => ({
         name: row["Name"] || "",
         email: row["Email"] || "",
@@ -34,7 +34,7 @@ const BulkStudentUploadModal = ({ isOpen, onClose }) => {
         branchCode: row["Branch Code"] || "",
         batch: row["Batch"] || "",
         semester: row["Semester"] || "",
-        password: row["Password"] || "password123", // Default if blank
+        password: row["Password"] || "password123", 
       }));
 
       setPreviewData(formattedData);
@@ -73,7 +73,7 @@ const BulkStudentUploadModal = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200">
         
-        {/* Header */}
+        
         <div className="flex justify-between items-center p-6 border-b border-slate-100">
           <div>
             <h2 className="text-xl font-bold text-slate-800">Bulk Upload Students</h2>
@@ -84,7 +84,7 @@ const BulkStudentUploadModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Content */}
+        
         <div className="p-6 flex-1 overflow-hidden flex flex-col">
           {previewData.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50">
@@ -125,7 +125,7 @@ const BulkStudentUploadModal = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        {/* Footer */}
+        
         {previewData.length > 0 && (
           <div className="p-6 border-t border-slate-100 flex justify-between items-center bg-slate-50 rounded-b-xl">
             <span className="text-slate-600 font-medium">{previewData.length} records ready</span>
