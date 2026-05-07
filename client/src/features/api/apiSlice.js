@@ -4,7 +4,7 @@ export const apiSlice = createApi({
   tagTypes: ["Faculty", "Student", "Course"],
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api",
+    baseUrl: "https://attendo-hfmg.onrender.com/api",
     prepareHeaders: (headers, { getState }) => {
       const token = getState().auth.token;
       if (token) {
