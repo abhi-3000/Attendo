@@ -109,12 +109,26 @@ export const apiSlice = createApi({
       query: () => "/admin/analytics",
       providesTags: ["Analytics"],
     }),
+    // markGeofencedAttendance: builder.mutation({
+    //   query: (data) => ({
+    //     url: "/student/mark-geofence",
+    //     method: "POST",
+    //     body: data,
+    //   }),
+    //   invalidatesTags: ["Attendance"],
+    // }),
     markGeofencedAttendance: builder.mutation({
-      query: (data) => ({
-        url: "/student/mark-geofence",
-        method: "POST",
-        body: data,
-      }),
+      query: (data) => {
+        const token = localStorage.getItem("token");
+        return {
+          url: "/student/mark-geofence",
+          method: "POST",
+          body: data,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+      },
       invalidatesTags: ["Attendance"],
     }),
   }),
