@@ -137,15 +137,29 @@ export const getStudentDashboard = async (req, res) => {
 //   }
 // };
 
+
 export const markGeofencedAttendance = async (req, res) => {
   console.log("1 Geofence Route Hit");
   try {
     console.log("2 Request Body:", req.body);
-    console.log("3 User ID from auth middleware:", req.user?.id);
+    const userId =
+      req.userId || req.user?.id || req.user?.userId || req.user?._id;
+    console.log("3 Extracted User ID:", userId);
+
+    if (!userId) {
+      console.log(
+        "CRITICAL: Could not find ID. req.user is:",
+        req.user,
+        "req.userId is:",
+        req.userId,
+      );
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: Could not extract User ID from token." });
+    }
 
     const { courseId, studentLat, studentLng, facultyLat, facultyLng } =
       req.body;
-    const userId = req.user.id;
 
     console.log("4 Calculating Distance");
     const distance = calculateDistance(
@@ -155,9 +169,12 @@ export const markGeofencedAttendance = async (req, res) => {
       studentLng,
     );
     console.log("5 Distance is:", distance);
-
-    if (distance > 500) {
-      return res.status(400).json({ error: "Outside classroom radius." });
+    if (distance > 1000) {
+      return res
+        .status(400)
+        .json({
+          error: `You are outside the radius. Distance: ${Math.round(distance)}m`,
+        });
     }
 
     const today = new Date();
@@ -177,11 +194,11 @@ export const markGeofencedAttendance = async (req, res) => {
 
     console.log("8 Finding Student Profile");
     const studentData = await prisma.student.findUnique({
-      where: { userId: userId },
+      where: { userId: userId }, 
     });
 
     if (!studentData) {
-      console.log("CRASH: No student profile found for this user ID");
+      console.log("CRASH: No student profile found for this user ID:", userId);
       return res
         .status(404)
         .json({ error: "Student profile not found in database." });
