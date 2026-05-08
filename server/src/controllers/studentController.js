@@ -2,24 +2,21 @@ import { PrismaClient } from "@prisma/client";
 import { calculateDistance } from "../utils/geoUtils.js";
 const prisma = new PrismaClient();
 
-
 export const getStudentDashboard = async (req, res) => {
   const userId = req.user.userId;
 
   try {
-  
     const student = await prisma.student.findUnique({
       where: { userId },
       include: {
         branch: true,
-        user: { select: { name: true } }, 
+        user: { select: { name: true } },
       },
     });
 
     if (!student)
       return res.status(404).json({ error: "Student profile not found" });
 
-  
     const courses = await prisma.course.findMany({
       where: {
         branchId: student.branchId,
@@ -31,7 +28,6 @@ export const getStudentDashboard = async (req, res) => {
         },
       },
     });
-
 
     const data = await Promise.all(
       courses.map(async (course) => {
@@ -77,54 +73,130 @@ export const getStudentDashboard = async (req, res) => {
   }
 };
 
+// export const markGeofencedAttendance = async (req, res) => {
+//   try {
+//     const { courseId, studentLat, studentLng, facultyLat, facultyLng } =
+//       req.body;
+//     const userId = req.user.id;
 
+//     const distance = calculateDistance(
+//       facultyLat,
+//       facultyLng,
+//       studentLat,
+//       studentLng,
+//     );
+
+//     if (distance > 50) {
+//       return res
+//         .status(400)
+//         .json({ error: "You are outside the 50 meter classroom radius." });
+//     }
+
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0);
+
+//     let session = await prisma.attendanceSession.findFirst({
+//       where: { courseId, date: { gte: today } },
+//     });
+
+//     if (!session) {
+//       session = await prisma.attendanceSession.create({
+//         data: { courseId, date: new Date() },
+//       });
+//     }
+
+//     const studentData = await prisma.student.findUnique({
+//       where: { userId: userId },
+//     });
+
+//     const existingRecord = await prisma.attendanceRecord.findFirst({
+//       where: { sessionId: session.id, studentId: studentData.id },
+//     });
+
+//     if (existingRecord) {
+//       return res
+//         .status(400)
+//         .json({ error: "Your attendance is already marked for today." });
+//     }
+
+//     await prisma.attendanceRecord.create({
+//       data: {
+//         sessionId: session.id,
+//         studentId: studentData.id,
+//         status: "PRESENT",
+//       },
+//     });
+
+//     res
+//       .status(200)
+//       .json({ message: "Verified and marked present successfully." });
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ error: "Server error during location verification." });
+//   }
+// };
 
 export const markGeofencedAttendance = async (req, res) => {
+  console.log("1 Geofence Route Hit");
   try {
+    console.log("2 Request Body:", req.body);
+    console.log("3 User ID from auth middleware:", req.user?.id);
+
     const { courseId, studentLat, studentLng, facultyLat, facultyLng } =
       req.body;
     const userId = req.user.id;
 
+    console.log("4 Calculating Distance");
     const distance = calculateDistance(
       facultyLat,
       facultyLng,
       studentLat,
       studentLng,
     );
+    console.log("5 Distance is:", distance);
 
-    if (distance > 50) {
-      return res
-        .status(400)
-        .json({ error: "You are outside the 50 meter classroom radius." });
+    if (distance > 500) {
+      return res.status(400).json({ error: "Outside classroom radius." });
     }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
+    console.log("6 Finding Session");
     let session = await prisma.attendanceSession.findFirst({
       where: { courseId, date: { gte: today } },
     });
 
     if (!session) {
+      console.log("7 Creating Session");
       session = await prisma.attendanceSession.create({
         data: { courseId, date: new Date() },
       });
     }
 
+    console.log("8 Finding Student Profile");
     const studentData = await prisma.student.findUnique({
       where: { userId: userId },
     });
 
+    if (!studentData) {
+      console.log("CRASH: No student profile found for this user ID");
+      return res
+        .status(404)
+        .json({ error: "Student profile not found in database." });
+    }
+
+    console.log("9 Checking Existing Record");
     const existingRecord = await prisma.attendanceRecord.findFirst({
       where: { sessionId: session.id, studentId: studentData.id },
     });
 
     if (existingRecord) {
-      return res
-        .status(400)
-        .json({ error: "Your attendance is already marked for today." });
+      return res.status(400).json({ error: "Attendance already marked." });
     }
 
+    console.log("10 Marking Present");
     await prisma.attendanceRecord.create({
       data: {
         sessionId: session.id,
@@ -133,10 +205,12 @@ export const markGeofencedAttendance = async (req, res) => {
       },
     });
 
+    console.log("11 Success");
     res
       .status(200)
       .json({ message: "Verified and marked present successfully." });
   } catch (error) {
+    console.error("CRITICAL GEOFENCE ERROR:", error);
     res
       .status(500)
       .json({ error: "Server error during location verification." });
